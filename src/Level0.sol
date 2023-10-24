@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// Objectives:
+// 1. Pass the authenticaiton
+
 contract Level0 {
 
   string public password;

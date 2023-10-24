@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// Objectives:
+// 1. Gain ownership on the contract
+// 2. WIthdraw the contract's funds
+
 contract Fallback {
 
   mapping(address => uint) public contributions;

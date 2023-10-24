@@ -3,6 +3,9 @@ pragma solidity ^0.6.0;
 
 import "@openzeppelin-06/contracts/math/SafeMath.sol";
 
+// Objectives:
+// 1. Gain ownership on the contract
+
 contract Fallout {
     using SafeMath for uint256;
     mapping(address => uint256) allocations;
