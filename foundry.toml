@@ -3,6 +3,10 @@ src = "src"
 out = "out"
 libs = ["lib"]
 
+remappings = [
+    "@openzeppelin/=lib/openzeppelin-contracts/",
+    "@openzeppelin-06/=lib/openzeppelin-contracts-06/",
+]
 
 eth_rpc_url = 'https://rpc.ankr.com/eth_goerli'
-etherscan_api_key = 'CD49TWN35TUE71CI79Y8K8AIMJBIU94XKS'
+etherscan_api_key = '${ETHERSCAN_KEY}'
