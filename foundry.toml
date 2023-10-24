@@ -3,4 +3,6 @@ src = "src"
 out = "out"
 libs = ["lib"]
 
-# See more config options https://github.com/foundry-rs/foundry/tree/master/config
+
+eth_rpc_url = 'https://rpc.ankr.com/eth_goerli'
+etherscan_api_key = 'CD49TWN35TUE71CI79Y8K8AIMJBIU94XKS'
