@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// Objectives:
-// 1. Gain ownership on the contract
-// 2. WIthdraw the contract's funds
+// Objectives
+// 1. Claim ownership of this contract
+// 2. Drain it's ETH
 
 contract Fallback {
 

