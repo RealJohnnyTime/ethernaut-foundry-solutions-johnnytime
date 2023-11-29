@@ -53,7 +53,7 @@ In case you feel like you lack some fundamentals in smart contract hacking, you 
 The idea of the first challenge is to introduce us to Ethernaut and show us how the CTF works. 
 The first challenge can be easily solved using the browser console.
 We can also solve it using Foundry.
-This is the [smart contract of the challenge](./src/Level0.sol), and this is the [solution contract](./script/Level0Solution.sol)
+This is the [smart contract of the challenge](./src/Level0.sol), and this is the [solution contract](./script/Level0Solution.s.sol)
 In order to complete the challenge we will execute the following command from our terminal:
 `forge script script/Level0Solution.s.sol —-broadcast`.
 Now we can go to the Ethernaut challenge page and click “Submit Instance”.
