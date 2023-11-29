@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// Objectives:
+// 1. Unlock the vault
+
 contract Vault {
   bool public locked;
   bytes32 private password;

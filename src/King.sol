@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// Objectives:
+// 1. Become the last king!
+
 contract King {
 
   address king;

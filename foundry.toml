@@ -9,4 +9,5 @@ remappings = [
 ]
 
 eth_rpc_url = 'https://rpc.ankr.com/eth_goerli'
+# eth_rpc_url = 'https://rpc.ankr.com/eth_sepolia'
 etherscan_api_key = '${ETHERSCAN_KEY}'
