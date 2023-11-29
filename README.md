@@ -115,5 +115,5 @@ In the script we:
 
 [Ethernaut Fallout Solution Full Article](https://medium.com/p/13d6f215ac44)
 
-[![Ethernaut Fallout Foundry Solution walkthrough Video](https://i.imgur.com/Q2TrPHs.jpg)](https://www.youtube.com/watch?v=mQQFgWbSXyg&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
+[![Ethernaut Fallout Foundry Solution Walkthrough Video](https://i.imgur.com/WGEz5Re.jpg)](https://www.youtube.com/watch?v=hbLuyGCSCkQ&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
