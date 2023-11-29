@@ -59,7 +59,61 @@ In order to complete the challenge we will execute the following command from ou
 Now we can go to the Ethernaut challenge page and click “Submit Instance”.
 And congratulation! You completed the first Ethernaut challenge using Foundry! 🥳
 
-[Checkout The Full Article](https://medium.com/@JohnnyTime/ethernaut-foundry-solutions-2023-how-to-start-challenge-0-solution-3dbe243168c4)
+[How to Solve Ethernaut with Foundry Full Article](https://medium.com/@JohnnyTime/ethernaut-foundry-solutions-2023-how-to-start-challenge-0-solution-3dbe243168c4)
 
-[![Watch The Full Video](https://i.imgur.com/Q8nTceK.jpg)](https://www.youtube.com/watch?v=UWy-CcnulCA&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
+[![How to Solve Ethernaut with Foundry - Full Video](https://i.imgur.com/Q8nTceK.jpg)](https://www.youtube.com/watch?v=UWy-CcnulCA&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
+
+
+## 1: Fallback
+In the Fallback smart contract, our goal is to claim ownership of the contract and then reduce it’s balance to 0 (drain it).
+
+This is the [smart contract of the challenge](./src/Fallback.sol).
+
+To update the owner using the receive function, you must meet the following requirements:
+1. Send an amount greater than 0 ETH in msg.value (even 1 WEI is sufficient).
+2. Have an entry in the contributions mapping, meaning you must contribute at least 1 WEI to the smart contract.
+
+To achieve this, simply follow these steps:
+1. Invoke the contribute function with a contribution of 1 WEI.
+2. Make a call to the contract without any additional data, sending 1 WEI to trigger the receive function.
+
+This is the [solution contract](./script/FallbackSolution.s.sol), in order to complete the challenge we will execute the following command from our terminal:
+`forge script script/FallbackSolution.s.sol —-broadcast`
+
+Make sure to update the instance address to your instance.
+
+This script first calls the contribute function with 1 WEI and then triggers the default `receive()` function by making a low-level call to the contract with 1 WEI.
+
+[Ethernaut Fallback Solution Full Article](https://medium.com/@JohnnyTime/ethernaut-ctf-fallback-challenge-1-foundry-solution-2023-5382f5890151)
+
+[![Ethernaut Fallback Foundry Solution walkthrough Video](https://i.imgur.com/Q2TrPHs.jpg)](https://www.youtube.com/watch?v=mQQFgWbSXyg&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
+
+
+## 2: Fallout
+In the [Fallout smart contract](./src/Fallout.sol), our goal is to claim ownership of the contract.
+
+Worth to mention:
+1. The contract is written in an older Solidity version (0.6.0). 
+2. The contract's constructor sets the owner as the `msg.sender` upon deployment.
+3. There is no function to change the owner.
+
+Upon closer inspection, we discover that the "so-called constructor" in the Fallout smart contract is not a constructor. It is just a public payable function with a different name "Fal1out" (with 1 instead of l), and this function will not be automatically triggered upon contract deployment. Due to this, the owner remains set to address zero, and anyone can call this function to update the owner.
+
+All we need to do is call the public `Fal1out()` function and it will update the owner variable with our address. Let's solve it with Foundry.
+
+This is the [solution contract](./script/FalloutSolution.s.sol), to complete the challenge we will execute the following command from our terminal:
+`forge script script/FalloutSolution.s.sol —-broadcast`
+
+Make sure to update the instance address to your instance.
+
+In the script we:
+1. Import the original `Fallout.sol` Smart Contract.
+2. Import foundry `Script.sol` so we can use vm commands and `console.sol` so we can print staff
+3. Create an instance of the Fallout smart contract (make sure to deploy the instance and get your instance address from the ethernaut page)
+4. Use `vm.startBroadcast(vm.envUint("PRIVATE_KEY"))` to make sure transactions are broadcasted with our Metamask wallet private key
+5. Call the `Fal1out()` function and print the owner before and after to make sure it works.
+
+[Ethernaut Fallout Solution Full Article](https://medium.com/p/13d6f215ac44)
+
+[![Ethernaut Fallout Foundry Solution walkthrough Video](https://i.imgur.com/Q2TrPHs.jpg)](https://www.youtube.com/watch?v=mQQFgWbSXyg&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
