@@ -64,6 +64,7 @@ And congratulation! You completed the first Ethernaut challenge using Foundry! ð
 
 [![How to Solve Ethernaut with Foundry - Full Video](https://i.imgur.com/Q8nTceK.jpg)](https://www.youtube.com/watch?v=UWy-CcnulCA&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
+---
 
 ### 1: Fallback Solution
 In the Fallback smart contract, our goal is to claim ownership of the contract and then reduce itâ€™s balance to 0 (drain it).
@@ -89,6 +90,7 @@ This script first calls the contribute function with 1 WEI and then triggers the
 
 [![Ethernaut Fallback Foundry Solution walkthrough Video](https://i.imgur.com/Q2TrPHs.jpg)](https://www.youtube.com/watch?v=mQQFgWbSXyg&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
+---
 
 ### 2: Fallout Solution
 In the [Fallout smart contract](./src/Fallout.sol), our goal is to claim ownership of the contract.
@@ -118,6 +120,8 @@ In the script we:
 
 [![Ethernaut Fallout Foundry Solution Walkthrough Video](https://i.imgur.com/WGEz5Re.jpg)](https://www.youtube.com/watch?v=hbLuyGCSCkQ&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
+---
+
 ### 3: CoinFlip Solution
 In the [Coinflip smart contract](./src/CoinFlip.sol), our goal is to win the game 10 times in a row!
 
@@ -146,6 +150,8 @@ forge script script/CoinFlipSolution.s.sol --broadcast
 [Ethernaut CoinFlip Solution Full Article](https://medium.com/p/b8c0725f474b)
 
 [![Ethernaut CoinFlip Foundry Solution Walkthrough Video](https://i.imgur.com/E8REYc1.jpg)](https://www.youtube.com/watch?v=02uda3XpQfg&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
+
+---
 
 ### 4: Telephone Solution
 
