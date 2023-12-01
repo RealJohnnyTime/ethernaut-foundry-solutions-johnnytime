@@ -20,13 +20,14 @@ foundryup
 6. We will submit the challenge through the [Ethernaut Website](https://ethernaut.openzeppelin.com/).
 
 ## Solutions
-## 0 - How to Start + Challenge 0 Solution
+
+### 0 - How to Start + Challenge 0 Solution
 Welcome to the best Ethernaut CTF Solutions Repository, with Foundry!
 
-### What is Ethernaut?
+#### What is Ethernaut?
 [Ethernaut](https://ethernaut.openzeppelin.com/), brought to us by [OpenZeppelin](https://www.openzeppelin.com/), is a Capture The Flag (CTF) style challenge focused on smart contract hacking and auditing. It consists of 29 levels, each progressively more complex, offering an excellent platform to master these skills.
 
-### Prerequisites & Setting up the Environment
+#### Prerequisites & Setting up the Environment
 Before we dive into Ethernaut challenges, we need to set up our environment. [Metamask](https://metamask.io/), a popular Ethereum wallet, is essential. Here’s how you can configure Metamask for the Goerli/Sepolia testnet (Ethernaut challenges exists on both testnet chains and it's up to you to choose):
 
 1. Download and install the Metamask browser extension if you haven’t already.
@@ -35,7 +36,7 @@ Before we dive into Ethernaut challenges, we need to set up our environment. [Me
 4. Check the [JohnnyTime YouTube channel](https://www.youtube.com/@JohnnyTime) for more tutorials and updates, and check the [full Ethernaut Foundry Solutions playlist](https://www.youtube.com/watch?v=UWy-CcnulCA&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS).
 5. Want to make out of Smart Contract Hacking into a career? Check out the [full Smart Contract Hacking Course](https://smartcontractshacking.com/).
 
-### Tips for Success
+#### Tips for Success
 Succeeding in Ethernaut challenges requires strategic thinking and keen observation. Here are tips to boost your success:
 
 - **Careful Reading:** Thoroughly understand exercise instructions, objectives, and hints.
@@ -46,10 +47,10 @@ Succeeding in Ethernaut challenges requires strategic thinking and keen observat
 - **Take Breaks:** Refresh your mind by taking breaks during complex challenges.
 - **Watch Walkthroughs:** Seek guidance from [walkthrough videos](https://www.youtube.com/watch?v=UWy-CcnulCA&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS) for new perspectives.
 
-### Comprehensive Course Option
+#### Comprehensive Course Option
 In case you feel like you lack some fundamentals in smart contract hacking, you can take a comprehensive and structured approach that will help you kickstart your smart contract auditing career. You can enroll in [The Smart Contract Hacking Course](https://smartcontractshacking.com/) - which includes more than 30 chapters and 52 exercises. The course offers community interaction and an official Smart Contract Hacker Certificate upon completion.
 
-### Challenge 0 Solution
+#### Challenge 0 Solution
 The idea of the first challenge is to introduce us to Ethernaut and show us how the CTF works. 
 The first challenge can be easily solved using the browser console.
 We can also solve it using Foundry.
@@ -64,7 +65,7 @@ And congratulation! You completed the first Ethernaut challenge using Foundry! �
 [![How to Solve Ethernaut with Foundry - Full Video](https://i.imgur.com/Q8nTceK.jpg)](https://www.youtube.com/watch?v=UWy-CcnulCA&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
 
-## 1: Fallback
+### 1: Fallback Solution
 In the Fallback smart contract, our goal is to claim ownership of the contract and then reduce it’s balance to 0 (drain it).
 
 This is the [smart contract of the challenge](./src/Fallback.sol).
@@ -89,7 +90,7 @@ This script first calls the contribute function with 1 WEI and then triggers the
 [![Ethernaut Fallback Foundry Solution walkthrough Video](https://i.imgur.com/Q2TrPHs.jpg)](https://www.youtube.com/watch?v=mQQFgWbSXyg&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
 
-## 2: Fallout
+### 2: Fallout Solution
 In the [Fallout smart contract](./src/Fallout.sol), our goal is to claim ownership of the contract.
 
 Worth to mention:
@@ -117,3 +118,32 @@ In the script we:
 
 [![Ethernaut Fallout Foundry Solution Walkthrough Video](https://i.imgur.com/WGEz5Re.jpg)](https://www.youtube.com/watch?v=hbLuyGCSCkQ&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
+### 3: CoinFlip Solution
+In the [Coinflip smart contract]((./src/CoinFlip.sol)), our goal is to win the game 10 times in a row!
+
+#### So how does the CoinFlip game work?
+1. To "generate" a random number, the contract uses the hash of the previous block, which is not truly random but serves as a pseudo-random source.
+2. When you play, you make a guess (heads or tails) by calling the flip function with your choice (boolean).
+3. The function then calculates a number based on the block's hash and compares it to your guess.
+4. If your guess matches the calculated number, you win, and your consecutive win count increases. If not, you lose, and your win count resets.
+5. The game continues until you win 10 times in a row.
+
+#### Let's exploit it!
+Generating numbers based on constant values and block information is a big no-no!
+We can create our own smart contract that will play the game, it will execute the same code, generate the same number, and play the game with 100% success, we created exactly that in the [solution file](./script/CoinFlipSolution.s.sol).
+
+This script consists of two contracts: `Player` and `CoinFlipSolution`. The Player contract automatically plays the CoinFlip game by calculating a pseudo-random guess and calling the flip function on the specified CoinFlip contract. The `CoinFlipSolution` script orchestrates the process, broadcasting the transactions and displaying the current `consecutiveWins` count.
+
+Now that the exploit script is ready, we can execute from our terminal the following command:
+```bash
+forge script script/CoinFlipSolution.s.sol --broadcast
+```
+
+** Make sure to update the instance address to your instance.
+** **Note:** You will have to run the script 10 times in order to pass the challenge 😅
+
+[Ethernaut CoinFlip Solution Full Article](https://medium.com/p/b8c0725f474b)
+
+[![Ethernaut CoinFlip Foundry Solution Walkthrough Video](https://i.imgur.com/E8REYc1.jpg)](https://www.youtube.com/watch?v=02uda3XpQfg&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
+
+### 4: Telephone Solution
