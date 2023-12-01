@@ -188,5 +188,6 @@ Then we can go to the Ethernaut website and submit the challenge :)
 
 [![Ethernaut Telephone Foundry Solution Walkthrough Video](https://i.imgur.com/9kn66aO.jpg)](https://www.youtube.com/watch?v=Av7NwWb2t2M&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
+---
 
 ### 5: Token Solution
