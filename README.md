@@ -119,7 +119,7 @@ In the script we:
 [![Ethernaut Fallout Foundry Solution Walkthrough Video](https://i.imgur.com/WGEz5Re.jpg)](https://www.youtube.com/watch?v=hbLuyGCSCkQ&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
 ### 3: CoinFlip Solution
-In the [Coinflip smart contract]((./src/CoinFlip.sol)), our goal is to win the game 10 times in a row!
+In the [Coinflip smart contract](./src/CoinFlip.sol), our goal is to win the game 10 times in a row!
 
 #### So how does the CoinFlip game work?
 1. To "generate" a random number, the contract uses the hash of the previous block, which is not truly random but serves as a pseudo-random source.
@@ -140,6 +140,7 @@ forge script script/CoinFlipSolution.s.sol --broadcast
 ```
 
 ** Make sure to update the instance address to your instance.
+
 ** **Note:** You will have to run the script 10 times in order to pass the challenge 😅
 
 [Ethernaut CoinFlip Solution Full Article](https://medium.com/p/b8c0725f474b)
@@ -147,3 +148,45 @@ forge script script/CoinFlipSolution.s.sol --broadcast
 [![Ethernaut CoinFlip Foundry Solution Walkthrough Video](https://i.imgur.com/E8REYc1.jpg)](https://www.youtube.com/watch?v=02uda3XpQfg&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
 
 ### 4: Telephone Solution
+
+In the [Telephone smart contract](./src/Telephone.sol), our goal is to claim ownership of the Telephone contract!
+
+The Telephone Smart Contract:
+1. Has an `owner`` variable, initially set to the address that deploys the contract (not us 😢).
+2. The `changeOwner` function lets you update the owner's address, but only if the original sender (`tx.origin`) of the transaction is not the same as the current sender (`msg.sender`), which means - a smart contract.
+
+To solve the challenge we first need to understand the difference between `tx.origin` and `msg.sender` and how we can make sure they are different.
+
+#### The difference between msg.sender to tx.origin
+![msg.sender vs tx.origin](https://i.imgur.com/BjDKoow.png)
+
+`tx.origin` is the original sender of a transaction, which is always an EOA (Externally Owned Account) and can never be a smart contract. It represents the external Ethereum account that initiated the transaction. It remains the same throughout the entire transaction chain, even if a contract calls another contract.
+
+`msg.sender` is the sender of the current transaction within a contract. It can change when one contract interacts with another, as it reflects the address of the contract that initiated the most recent call.
+
+To make `tx.origin` and `msg.sender` different, you can create a contract that acts as an intermediary. When this contract calls another contract, `msg.sender` in the called contract will be the intermediary contract's address, while `tx.origin` remains the original sender's address.
+
+To solve this challenge with Foundry, we've created the script solution [TelephoneSolution.s.sol](./script/TelephoneSolution.s.sol).
+
+The Script is working as follows:
+1. Generates and deploy a new contract called `IntermediaryContract`.
+2. Provides this new contract with both the original `Telephone` smart contract instance and our player's Ethereum address.
+3. `IntermediaryContract` invokes the `changeOwner` function and pass our player EOA account as the parameter. 
+4. Since it's a contract making this call and not an externally owned account (EOA), `msg.sender` and `tx.origin` will differ.
+5. The `require` statement will be satisfied, enabling the owner to be changed to our player's account.
+
+** Make sure to update the instance address to your instance.
+
+We can execute from our terminal the following command:
+```bash
+forge script script/TelephoneSolution.s.sol --broadcast
+```
+
+Then we can go to the Ethernaut website and submit the challenge :)
+
+[Ethernaut Telephone Solution Full Article](https://medium.com/p/f2e06f229f27)
+
+[![Ethernaut Telephone Foundry Solution Walkthrough Video](https://i.imgur.com/9kn66aO.jpg)](https://www.youtube.com/watch?v=Av7NwWb2t2M&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
+
+
+### 5: Token Solution
