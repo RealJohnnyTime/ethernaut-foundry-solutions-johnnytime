@@ -197,3 +197,178 @@ Then we can go to the Ethernaut website and submit the challenge :)
 ---
 
 ### 5: Token Solution
+In the [Token smart contract](./src/Token.sol), we start with 20 tokens in balance and we need to get (somehow 👀) more.
+
+1. The `Token.sol` smart contract represents a token.
+2. When the contract is deployed, the account who deploys it receives an initial supply of tokens specified in the constructor.
+3. Anyone can transfer tokens from your balance to another address using the transfer function. 
+4. To do this, we provide the recipient's address and the amount of tokens you want to send.
+5. The function checks if you have enough tokens to make the transfer (greater than or equal to the value you want to send) to prevent over-sending tokens.
+6. Anyone can check the balance of tokens for a specific address using the `balanceOf` function.
+
+At first, this smart contract looks very simple and safe, 
+but when we see that it uses solidity version 0.6.0 that's where the fun begins…
+
+#### Arithmetic Overflow and Underflow Explained
+![Arithmetic Overflow and Underflow in Solidity](https://i.imgur.com/OjpxvJd.png)
+
+Arithmetic overflow and underflow are issues in Solidity smart contracts related to how numbers are handled in the code.
+
+**Arithmetic Overflow:** This occurs when a number becomes larger than the maximum value that can be stored in a specific data type. In Solidity before version 0.8.0, this was problematic because it didn't throw an error but simply wrapped around and reset to 0, potentially causing unintended behavior and security vulnerabilities.
+
+**Arithmetic Underflow:** On the flip side, this happens when a number becomes smaller than the minimum value that can be stored in a specific data type. In Solidity before version 0.8.0, it also doesn't throw an error and could lead to unexpected results.
+
+These issues were fixed in Solidity version 0.8 and later. In these newer versions, when an overflow or underflow occurs, Solidity will revert the transaction, preventing unintended behavior and improving the security of smart contracts. 
+
+Before Solidity version 0.8.0, it was common to use a library called [SafeMath](https://docs.openzeppelin.com/contracts/2.x/api/math), to mitigate the risks of arithmetic overflow and underflow in smart contracts.
+
+This library offers functions designed to perform arithmetic operations while including `require` statements to check that no overflow or underflow occurred during these operations. These `require` statements ensured the safety of the calculations and prevented potential vulnerabilities stemming from arithmetic issues. 
+
+Starting from Solidity version 0.8.0, these checks for overflow and underflow were incorporated into the language itself, simplifying the process of writing secure smart contracts.
+
+#### The Token is vulnerable to underflow!
+
+We can see that the token smart contract is compiled with Solidity version 0.6. This indicates that without proper overflow checks or the incorporation of the SafeMath library to handle arithmetic operations, it may be vulnerable to both overflows and underflows.
+
+The transfer function in particular uses arithmetic operations on the balance mapping:
+```solidity
+function transfer(address _to, uint _value) public returns (bool) {
+  require(balances[msg.sender] - _value >= 0);
+  balances[msg.sender] -= _value;
+  balances[_to] += _value;
+  return true;
+}
+```
+
+This function is vulnerable to arithmetic underflow because it doesn't have proper checks to prevent the balance of the sender from going below zero, which can lead to unexpected and potentially harmful behavior. 
+
+Here's why:
+
+1. **Insufficient Check:** The function uses a require statement to check if the sender's balance (`balances[msg.sender]`) after deducting the _value is greater than or equal to zero. If this check fails, the function will revert, preventing the transaction from proceeding. However, this check is not sufficient to prevent arithmetic underflows.
+
+2. **Arithmetic Underflow Scenario:** Suppose the sender's balance is 20 tokens (which is out player balance), and they want to send 21 tokens to another address (`_value = 21`). The check in the require statement will evaluate to false, and the function should revert. 
+
+However, Solidity versions prior to 0.8 didn't handle underflows and would simply wrap the result around. So, instead of reverting, the subtraction operation would turn the sender's balance into a very large positive number.
+
+3. **Consequences:** This means that the sender's balance doesn't become negative as expected; instead, it becomes an unexpectedly large positive number, allowing the sender to effectively create an enormous balance out of thin air. 
+
+
+By sending 21 tokens to the `address(0)` account, our balance is transformed into an exceedingly large number, because
+```solidity
+20 - 21 = MAX UINT256 = 2 ^ 256
+```
+
+To solve this challenge with Foundry, we've created the script solution [TokenSolution.s.sol](./script/TokenSolution.s.sol).
+
+** Make sure to update the instance address to your instance.
+
+We can execute from our terminal the following command:
+```bash
+forge script script/TokenSolution.s.sol --broadcast
+```
+
+Then we can go to the Ethernaut website and submit the challenge :)
+
+[Ethernaut Token Solution Full Article](https://medium.com/p/5344ea366669)
+
+[![Ethernaut Token Foundry Solution Walkthrough Video](https://i.imgur.com/JRqieQz.jpg)](https://www.youtube.com/watch?v=kTeYaR-B4Bg&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
+
+---
+
+### 6: Delegation Solution
+This challenge consists of 2 smart contracts: [Delegate, and Delegation]((./src/Delegation.sol)). Our goal is to claim ownership of the deployed instance (the Delegation contract).
+
+
+1. The `Delegation` contract allows the owner to delegate function calls to the Delegate contract using `delegatecall`.
+2. The Delegate contract has a function `pwn()` that allows changing the owner.
+
+#### Delegate Smart Contract
+1. It has a variable `owner` to store the current owner's address.
+2. The constructor sets the initial owner when the contract is deployed.
+3. When `pwn()` is called, it changes the owner to the address of the transaction sender (`msg.sender`).
+
+#### Delegation Smart Contract
+1. It has two variables: `owner` for the contract's owner and `delegate` representing an instance of the Delegate contract.
+2. The constructor sets the initial owner as the sender of the deployment transaction and initializes the delegate with the provided delegate contract address.
+3. Implements a fallback function (`fallback() external`) that is triggered when the contract receives a call with no or unrecognized function signature.
+4. Within the fallback, it uses `delegatecall` to execute the same call on the delegate contract.
+
+The use of `delegatecall` in the fallback function enables the execution of functions from the Delegate contract in the context of the Delegation contract, potentially impacting its state.
+
+Triggering the `fallback` function and calling the pwn function through the `Delegation` contract allows us to change the state (specifically, the owner variable) of the Delegation contract and become its owner.
+
+#### Our attack will work as follows
+1. **Fallback Trigger:** Delegation contract's fallback function is triggered.
+2. **Delegatecall to Pwn:** Fallback uses `delegatecall` to execute pwn in Delegate.
+3. **Owner Change:** pwn changes ownership in Delegate and impacts Delegation.
+4. **Result:** Sender becomes the new owner of the Delegation contract.
+
+By making a low-level call to the `Delegation` instance and sending the encoded function signature of `pwn()`, we're able to trigger to `fallback` function which will trigger the pwn function in the Delegate contract:
+
+```solidity
+address(delegationInstance).call(abi.encodeWithSignature("pwn()"));
+```
+
+To solve this challenge with Foundry, we've created the script solution [DelegationSolution.s.sol](./script/DelegationSolution.s.sol).
+
+** Make sure to update the instance address to your instance.
+
+We can execute from our terminal the following command:
+```bash
+forge script script/DelegationSolution.s.sol --broadcast
+```
+
+Then we can go to the Ethernaut website and submit the challenge :)
+
+[Ethernaut Delegation Solution Full Article](https://medium.com/p/91b210c2a8e1)
+
+[![Ethernaut Delegation Foundry Solution Walkthrough Video](https://i.imgur.com/qc01JpA.jpg)](https://www.youtube.com/watch?v=uuMcXhBGv7g&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
+
+---
+
+### 7: Force Solution
+
+In this challenge, we have a smart contract that can't receive ETH (it doesn't have payable functions or a fallback function). Our goal is to force him to receive ETH!
+
+The Force smart contract is Empty. It doesn't have any functions or a constructor:
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Force {/*
+
+                   MEOW ?
+         /\_/\   /
+    ____/ o o \
+  /~____  =ø= /
+ (______)__m_m)
+
+*/}
+```
+
+So how can we increase the contract ETH balance anyway?
+
+#### The `selfdestruct` Opcode Explained
+The `selfdestruct` opcode is an opcode that allows us to "destroy" a smart contract (remove its bytecode from the blockchain), the interesting thing about `selfdestruct` is that it receives and address parameter, all the ETH that exists in the contract at the time of destruction will be sent to this address parameter.
+
+It doesn't matter if this address parameter is an EOA account or a smart contract, it doesn't matter if it's a contract with a `payable` or without, the `selfdestruct` operation will change the account's balance anyhow.
+
+#### The Solution
+1. We will create a new contract "ToBeDestructed".
+2. We will send `1 wei` to our malicious contract.
+3. We will use the `selfdestruct` function with the Force contract instance address as a parameter which will destroy the "ToBeDestructed" contract and transfer all its ETH (1 WEI) to the Force contract.
+
+To solve this challenge with Foundry, we've created the script solution [ForceSolution.s.sol](./script/ForceSolution.s.sol).
+
+** Make sure to update the instance address to your instance.
+
+We can execute from our terminal the following command:
+```bash
+forge script script/ForceSolution.s.sol --broadcast
+```
+
+Then we can go to the Ethernaut website and submit the challenge :)
+
+[Ethernaut Force Solution Full Article](https://medium.com/p/7b78f9373ca3)
+
+[![Ethernaut Force Foundry Solution Walkthrough Video](https://i.imgur.com/FuPV7fB.jpg)](https://www.youtube.com/watch?v=m4jxsMp29aY&list=PLKXasCp8iWpjYKwk0hcdVDVZlpW_NGEYS)
