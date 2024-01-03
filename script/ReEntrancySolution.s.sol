@@ -7,7 +7,7 @@ import "forge-std/console.sol";
 
 contract AttackReentrant {
 
-    Reentrance public reentranceInstance = Reentrance(payable(0x3BA2cC67ecaAF926DFe3B92250c6Ea85143AD568));
+    Reentrance public reentranceInstance = Reentrance(payable(0x3198bbDAE49C2D0d4E5de666730F675c02fFB67d));
 
     constructor() public payable {
         // Donate 0.001 to ourselfes

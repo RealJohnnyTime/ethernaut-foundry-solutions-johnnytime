@@ -7,11 +7,11 @@ import "forge-std/console.sol";
 
 contract PrivacySolution is Script {
 
-    Privacy public privacyInstance = Privacy(0xDC7B775cCA5162DA49D400D3aAff7f77bAbCF1aD);
+    Privacy public privacyInstance = Privacy(0xAc9ba5e72a1aFBF7bc9D1662050Ac2825D9a5E49);
 
     function run() external {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
-        bytes32 key = 0x8d07fb18a1848c8a4c8f2110b3b873d58f712f2b833bb3b7251a6ba6c93db4af;
+        bytes32 key = 0xd50db3040ce1877e68692940feed74c93e0e63573d895ad4542fb1de128b3713;
         console.log("Before: ", privacyInstance.locked());
         privacyInstance.unlock(bytes16(key));
         console.log("After: ", privacyInstance.locked());

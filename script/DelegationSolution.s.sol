@@ -7,7 +7,7 @@ import "forge-std/console.sol";
 
 contract DelegationSolution is Script {
 
-    Delegation public delegationInstance = Delegation(0xbee7ba2bba3C6A2A4433565154a3A16ab541aDB3);
+    Delegation public delegationInstance = Delegation(0x153eD2D8a8180b6F1781129766990C87ec35F65d);
 
     function run() external {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));

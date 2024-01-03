@@ -14,7 +14,7 @@ contract TheLastKing {
 
 contract KingSolution is Script {
 
-    King public kingInstance = King(payable(0x7d30F7cd2beD7e6f26cCB88118324B77A8952E65));
+    King public kingInstance = King(payable(0xA0169e4E86e717185Ec644473B4c4d8Fa7452C62));
 
     function run() external {
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
