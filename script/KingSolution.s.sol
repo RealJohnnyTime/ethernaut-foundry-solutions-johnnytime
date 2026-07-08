@@ -7,7 +7,7 @@ import "forge-std/console.sol";
 
 contract TheLastKing {
     constructor(King _kingInstacne) payable {
-        (bool result,) = address(_kingInstacne).call{value: _kingInstacne.prize()}("");
+        (bool result,) = address(_kingInstance).call{value: _kingInstacne.prize()}("");
         require(result);
     }
 }
